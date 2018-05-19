@@ -18,9 +18,9 @@ session = DBSession()
 # Create a new restorant ( a new row in restaurant table )
 myFirstRestaurant = Restaurant(name="Pizza Palace")
 # Add a record to staging area
-session.add(myFirstRestaurant)
+# session.add(myFirstRestaurant)
 # Commit the record to database
-session.commit()
+# session.commit()
 
 # Get all entries of restaurant table
 # print session.query(Restaurant).all()
@@ -31,8 +31,8 @@ cheesePizza = MenuItem(name="Cheese Pizza",
                        course="Entree",
                        price="$8.99",
                        restaurant=myFirstRestaurant)
-session.add(cheesePizza)
-session.commit()
+# session.add(cheesePizza)
+# session.commit()
 
 # get all rows of MenuItem database
 # print session.query(MenuItem).all()
