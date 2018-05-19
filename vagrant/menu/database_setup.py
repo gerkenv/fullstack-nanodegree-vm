@@ -31,7 +31,7 @@ class RestaurantMenu(object):
         # Create an instance of interface between SQLAlchemy and a database
         self.session = self.data_base_session()
 
-        Base.metadata.create_all(self.engine)
+        # Base.metadata.create_all(self.engine)
 
     def select_all_restaurants(self):
         self.create_database_engine()
