@@ -35,17 +35,31 @@ class RestaurantMenu(object):
 
     def select_all_restaurants(self):
         self.create_database_engine()
-        results = self.session.query(Restaurant).all()
-        restaraunt_names = []
-        for item in results:
-            restaraunt_names.append(item.name)
-        return restaraunt_names
+        return self.session.query(Restaurant).all()
+
+    def select_restaurant_by_id(self, restaurant_id):
+        self.create_database_engine()
+        try:
+            return self.session.query(Restaurant).filter_by(id=restaurant_id).one()
+        except:
+            return None
+
+    def update_restaurant(self, restaurant_id, restaurant_name):
+        self.create_database_engine()
+        restaurant = self.select_restaurant_by_id(restaurant_id)
+        if restaurant is None:
+            return False
+        restaurant.name = restaurant_name
+        self.session.add(restaurant)
+        self.session.commit()
+        return True
 
     def add_new_restaurant(self, restaurant_name):
         self.create_database_engine()
         new_restaurant = Restaurant(name=restaurant_name)
         self.session.add(new_restaurant)
         self.session.commit()
+
 
 class Restaurant(Base):
     '''docstring'''
