@@ -2,12 +2,42 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import cgi
 
+# import CRUD operations
+# from database_setup import Base, Restaurant, MenuItem, RestaurantMenu
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker
+from database_setup import RestaurantMenu
+
+# create session and connect to DB
+# engine = create_engine('sqlite:///restaurantmenu.db')
+# Base.metadata.bind = engine
+# DBSession = sessionmaker(bind=engine)
+# session = DBSession()
+DB = RestaurantMenu()
+
 
 class WebServerHandler(BaseHTTPRequestHandler):
     ''' docstring '''
     def do_GET(self):
         ''' docstring '''
         try:
+            if self.path.endswith('/restaurant'):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                output = ""
+                output += "<html><body>"
+                # for item in session.query(Restaurant).all():
+                for item in DB.select_all_restaurants():
+                    output += "<b>" + item + "</b><br>"
+                    output += "<a href='/restaurant'>Update</a><br>"
+                    output += "<a href='/restaurant'>Delete</a><br>"
+                    output += "<br>"
+                output += "</body></html>"
+                self.wfile.write(output)
+                print output
+                return
+
             if self.path.endswith("/hello"):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
@@ -43,6 +73,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.wfile.write(output)
                 print output
                 return
+
             else:
                 self.send_error(404, '"File Not Found" at path "%s"' % self.path)
         except IOError:
