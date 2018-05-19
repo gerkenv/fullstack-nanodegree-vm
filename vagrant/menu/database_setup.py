@@ -54,6 +54,15 @@ class RestaurantMenu(object):
         self.session.commit()
         return True
 
+    def delete_restaurant(self, restaurant_id):
+        self.create_database_engine()
+        restaurant = self.select_restaurant_by_id(restaurant_id)
+        if restaurant is None:
+            return False
+        self.session.delete(restaurant)
+        self.session.commit()
+        return True
+
     def add_new_restaurant(self, restaurant_name):
         self.create_database_engine()
         new_restaurant = Restaurant(name=restaurant_name)

@@ -21,6 +21,25 @@ class WebServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         ''' docstring '''
         try:
+            if self.path.endswith('/delete'):
+                restaurant_id = self.path.split("/")[2]
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+                restaurant = DB.select_restaurant_by_id(restaurant_id)
+                if restaurant is None:
+                    output = ""
+                    output += '<h1>Page is curretnly not available</h1>'
+                else:
+                    output = ""
+                    output += '<h1>Do you really want to delete the "%s" restaurant</h1>' % restaurant.name
+                    output += "<form method = 'POST' enctype='multipart/form-data' action = '%s'>" % self.path
+                    output += "<input type='submit' value='Delete'>"
+                    output += "</form></body></html>"
+                self.wfile.write(output)
+                print output
+                return
+
             if self.path.endswith('/edit'):
                 restaurant_id = self.path.split("/")[2]
                 self.send_response(200)
@@ -116,8 +135,27 @@ class WebServerHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         ''' docstring '''
         try:
+            if self.path.endswith('/delete'):
+                restaurant_id = self.path.split("/")[2]
+                result = DB.delete_restaurant(restaurant_id)
+                if result is False:
+                    output = ""
+                    output += "<html><body>"
+                    output += "<h1>Delete is failed, try again later!</h1>"
+                    output += "</body></html>"
+                    self.wfile.write(output)
+                    print output
+                    self.send_response(301)
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                else:
+                    self.send_response(301)
+                    self.send_header('Location', '/restaurants')
+                    self.send_header('Content-type', 'text/html')
+                    self.end_headers()
+                return
+
             if self.path.endswith('/edit'):
-                print 'inside'
                 restaurant_id = self.path.split("/")[2]
                 ctype, pdict = cgi.parse_header(
                     self.headers.getheader('content-type'))
@@ -140,7 +178,6 @@ class WebServerHandler(BaseHTTPRequestHandler):
                     self.send_header('Location', '/restaurants')
                     self.send_header('Content-type', 'text/html')
                     self.end_headers()
-
                 return
 
             if self.path.endswith("/restaurants/new"):
