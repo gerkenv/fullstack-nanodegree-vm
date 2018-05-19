@@ -41,6 +41,11 @@ class RestaurantMenu(object):
             restaraunt_names.append(item.name)
         return restaraunt_names
 
+    def add_new_restaurant(self, restaurant_name):
+        self.create_database_engine()
+        new_restaurant = Restaurant(name=restaurant_name)
+        self.session.add(new_restaurant)
+        self.session.commit()
 
 class Restaurant(Base):
     '''docstring'''
