@@ -1,5 +1,5 @@
 '''docstring'''
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from database_setup import Base, Restaurant, MenuItem
@@ -53,10 +53,15 @@ def newMenuItem(restaurant_id, session=SESSION):
     if request.method == 'POST':
         session()
         new_item = MenuItem(name=request.form['name'],
+                            course=request.form['course'],
+                            description=request.form['description'],
+                            price=request.form['price'],
                             restaurant_id=restaurant_id)
         session.add(new_item)
         session.commit()
         session.remove()
+        flash("The item '" + request.form['name'] +
+              "' is successfully added to database")
         return redirect(url_for('RestaurantMenu', restaurant_id=restaurant_id))
 
 
@@ -76,9 +81,14 @@ def editMenuItem(restaurant_id, menu_item_id, session=SESSION):
         session()
         item = session.query(MenuItem).filter_by(id=menu_item_id).one()
         item.name = request.form['item_name']
+        item.course = request.form['item_course']
+        item.description = request.form['item_description']
+        item.price = request.form['item_price']
         session.add(item)
         session.commit()
         session.remove()
+        flash("The item '" + request.form['item_name'] +
+              "' is successfully updated in database")
         return redirect(url_for('RestaurantMenu', restaurant_id=restaurant_id))
 
 
@@ -97,12 +107,16 @@ def deleteMenuItem(restaurant_id, menu_item_id, session=SESSION):
     if request.method == 'POST':
         session()
         item = session.query(MenuItem).filter_by(id=menu_item_id).one()
+        name = item.name
         session.delete(item)
         session.commit()
         session.remove()
+        flash("The item '" + name +
+              "' is successfully deleted from database")
         return redirect(url_for('RestaurantMenu', restaurant_id=restaurant_id))
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)

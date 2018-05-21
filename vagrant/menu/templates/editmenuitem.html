@@ -3,8 +3,11 @@
     <h1>Edit the Menu Item "{{item.name}}"</h1>
 
     <form action="{{ url_for('editMenuItem',restaurant_id=restaurant_id, menu_item_id=item.id) }}" method="POST">
-      <p>Name:</p>
-      <input type="text" size="30" name="item_name" placeholder="new item name">
+      <p>Fill in following fields:</p>
+      <input type="text" size="30" name="item_name" value="{{item.name}}"><br>
+      <input type="text" size="30" name="item_course" value="{{item.course}}"><br>
+      <input type="text" size="30" name="item_description" value="{{item.description}}"><br>
+      <input type="text" size="30" name="item_price" value="{{item.price}}"><br>
       <input type="submit" value="Update">
     </form>
 
