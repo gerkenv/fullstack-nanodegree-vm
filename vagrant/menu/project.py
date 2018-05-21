@@ -1,5 +1,5 @@
 '''docstring'''
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from database_setup import Base, Restaurant, MenuItem
@@ -15,7 +15,24 @@ session_factory = sessionmaker(bind=engine)
 SESSION = scoped_session(session_factory)
 
 
-@app.route('/')
+@app.route('/restaurants/<int:restaurant_id>/json')
+def get_restaurant_menu_json(restaurant_id, session=SESSION):
+    '''docstring'''
+    session()
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
+    session.remove()
+    return jsonify(MenuItems=[item.serialize for item in items])
+
+
+@app.route('/restaurants/<int:restaurant_id>/menu_items/<int:menu_item_id>/json')
+def get_menu_item(restaurant_id=0, menu_item_id, session=SESSION):
+    session()
+    item = session.query(MenuItem).filter_by(id=menu_item_id).one()
+    session.remove()
+    return jsonify(MenuItem=item.serialize)
+
+
 @app.route('/restaurants/<int:restaurant_id>/')
 def RestaurantMenu(restaurant_id=12, session=SESSION):
     '''docstring'''
@@ -26,6 +43,7 @@ def RestaurantMenu(restaurant_id=12, session=SESSION):
     return render_template('menu.html', restaurant=restaurant, items=items)
 
 
+@app.route('/')
 @app.route('/restaurants')
 @app.route('/restaurants/')
 def get_all_restaurants(session=SESSION):
