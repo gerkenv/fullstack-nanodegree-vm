@@ -12,5 +12,9 @@
     </div>
     {% endfor %}
 
+    <div>
+      <p><a href = '{{ url_for('newMenuItem', restaurant_id = restaurant.id) }}'>
+        Create a new menu item</a></p>
+    </div>
   </body>
 </html>
