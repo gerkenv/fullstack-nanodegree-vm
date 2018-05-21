@@ -7,12 +7,13 @@ app = Flask(__name__)
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
-session = DBSession()
+single_session = DBSession()
 
 @app.route('/')
 @app.route('/restaurants/<int:restaurant_id>/')
-def RestaurantMenu(restaurant_id=12):
+def RestaurantMenu(restaurant_id=12, session=single_session):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    print restaurant_id
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
     output = ''
     for item in items:
@@ -26,7 +27,8 @@ def RestaurantMenu(restaurant_id=12):
     return output
 
 @app.route('/restaurants')
-def get_all_restaurants(restaurant_id=12):
+@app.route('/restaurants/')
+def get_all_restaurants(session=single_session):
     restaurants = session.query(Restaurant).all()
     output = ''
     for restaurant in restaurants:
