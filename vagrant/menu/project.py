@@ -9,7 +9,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
 @app.route('/')
 @app.route('/hello')
 def HelloWorld():
@@ -18,6 +17,11 @@ def HelloWorld():
     output = ''
     for item in items:
         output += item.name
+        output += '</br>'
+        output += item.price
+        output += '</br>'
+        output += item.description
+        output += '</br>'
         output += '</br>'
     return output
 
