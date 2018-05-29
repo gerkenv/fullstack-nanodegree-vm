@@ -1,0 +1,18 @@
+{
+  "name": "helper-function",
+  "version": "1.0.0",
+  "description": "additional scripts to handle the quizes",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gerkenv/fullstack-nanodegree-vm/tree/course-designing-restful-apis"
+  },
+  "author": "gerkenv@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.1.2"
+  }
+}
